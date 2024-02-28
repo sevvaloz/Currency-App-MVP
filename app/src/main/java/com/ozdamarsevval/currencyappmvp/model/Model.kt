@@ -6,11 +6,11 @@ import com.ozdamarsevval.currencyappmvp.model.currency.BaseResponseCurrency
 import com.ozdamarsevval.currencyappmvp.model.currency.Result
 import com.ozdamarsevval.currencyappmvp.model.exchange.BaseResponseExchange
 import com.ozdamarsevval.currencyappmvp.model.exchange.Data
-import com.ozdamarsevval.currencyappmvp.source.remote.CurrencyInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/*
 class Model : Contract.Model {
 
     override fun requestAllCurrency(callback: (List<Result>) -> Unit) {
@@ -53,4 +53,4 @@ class Model : Contract.Model {
         })
     }
 
-}
+}*/

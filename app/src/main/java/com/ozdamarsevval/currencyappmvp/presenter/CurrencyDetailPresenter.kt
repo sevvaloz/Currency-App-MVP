@@ -1,24 +1,50 @@
 package com.ozdamarsevval.currencyappmvp.presenter
 
+import android.os.Handler
+import android.os.Looper
 import com.ozdamarsevval.currencyappmvp.contract.Contract
-import com.ozdamarsevval.currencyappmvp.model.Model
+import com.ozdamarsevval.currencyappmvp.repository.CurrencyRepository
+import com.ozdamarsevval.currencyappmvp.model.currency.Result
+import com.ozdamarsevval.currencyappmvp.model.exchange.Data
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class CurrencyDetailPresenter(
-    private val view: Contract.View
-): Contract.Presenter {
+class CurrencyDetailPresenter @Inject constructor(private val currencyRepository: CurrencyRepository) : Contract.Presenter {
 
-    private val model: Contract.Model = Model()
+    private var view: Contract.View? = null
+    private val handler = Handler(Looper.getMainLooper())
+    override fun attachView(view: Contract.View) {
+        this.view = view
+    }
+
+    override fun detachView() {
+        this.view = null
+    }
 
     override fun getAllCurrency() {
-        model.requestAllCurrency { allCurrency ->
-            view.showAllCurrency(allCurrency)
+        CoroutineScope(Dispatchers.IO).launch {
+            currencyRepository.requestAllCurrency(object :
+            CurrencyRepository.GetCurrencyListener {
+                override fun setCurrency(allCurrency: MutableList<Result>) {
+                    view?.showAllCurrency(allCurrency)
+                }
+            })
         }
     }
 
     override fun getExchangeResult(int: Int, base: String, to: String) {
-        super.getExchangeResult(int, base, to)
-        model.requestExchangeCurrency(int, base, to){ allData ->
-            view.showExchangeResult(allData)
+        CoroutineScope(Dispatchers.IO).launch {
+            handler.post { view?.showProgressBar() }
+            currencyRepository.requestExchangeCurrency(object :
+                CurrencyRepository.GetExchangeListener {
+                override fun setExchange(allData: MutableList<Data>) {
+                    view?.showExchangeResult(allData)
+                    handler.post { view?.hideProgressBar() }
+                }
+            }, int, base, to)
         }
     }
+
 }
