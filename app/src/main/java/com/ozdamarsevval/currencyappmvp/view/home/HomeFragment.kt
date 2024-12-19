@@ -25,14 +25,15 @@ class HomeFragment : Fragment(), Contract.View {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         homePresenter.attachView(this)
 
         binding.apply {
             rvCurrency.adapter = currencyAdapter
         }
-        //homePresenter.getAllCurrency()
+
+        homePresenter.getAllCurrency()
 
         return binding.root
     }

@@ -26,7 +26,9 @@ class CurrencyRepository @Inject constructor(
         currencyService.getAllCurrency()?.enqueue(object : Callback<BaseResponseCurrency> {
             override fun onResponse(call: Call<BaseResponseCurrency>, response: Response<BaseResponseCurrency>) {
                 if (response.code() == 200 && response.body() != null) {
-                    listener.setCurrency((response.body()!!.result.toMutableList()))
+                    val currencies = response.body()!!.result.toMutableList()
+                    listener.setCurrency(currencies)
+                    Log.d("CURRENCY", "FULL BODY: $currencies")
                 } else {
                     Log.d("CURRENCY", "Empty Body: ${response.code()}")
                 }
